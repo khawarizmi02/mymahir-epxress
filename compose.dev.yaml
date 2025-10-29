@@ -1,0 +1,44 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node-server-dev
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: users
+      DB_PORT: 3306
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app              # 🔥 Mount code for live updates
+      - /usr/src/app/node_modules   # 🔒 Prevent overwriting node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["npm", "run", "dev"]   # 🔄 Run nodemon for hot reload
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container-dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: users
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data_dev:

@@ -9,12 +9,20 @@ const mysql = require( 'mysql2/promise' );
 // });
 
 const database = mysql.createPool({
-  host: '127.0.0.1',
-	port: 3307,
-  user: 'myuser',
-  password: 'mypassword',
-  database: 'users'
+  host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
+
+// # Database (match with docker-compose)
+// DB_HOST=mysql
+// DB_USER=myuser
+// DB_PASSWORD=mypassword
+// DB_NAME=users
+// DB_PORT=3306
+
 
 // Test Connection
 ( async () => {

@@ -7,7 +7,7 @@ const db = require('./database')
 
 const app = express()
 
-const PORT = 3000
+const PORT = process.env.PORT
 
 app.engine('ejs', require('ejs').__express)
 app.set( 'view engine', 'ejs' );
@@ -34,28 +34,6 @@ app.get('/search', (req, res) => {
 
 const blogRoutes = require('./router/blogRoutes')
 app.use("/posts", blogRoutes)
-
-const posting = [
-	{
-		id: 1,
-		title: "Hello express"
-	},
-	{
-		id: 2,
-		title: "Tips Express JS"
-	},
-]
-
-app.get('/posting', (req, res) => {
-	res.render('index', {title: "My Posting", posting})
-})
-
-app.get('/posting/:id', (req, res) => {
-	const post = posting.find(p=>p.id == Number(req.params.id))
-	if(!post) return res.status(404).send('Post not found');
-	
-	res.render('post', {post})
-})
 
 const contactRoutes = require('./router/contactRoutes')
 app.use("/contacts", contactRoutes)

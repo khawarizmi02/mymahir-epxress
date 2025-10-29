@@ -1,18 +1,36 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
 services:
   server:
     build:
       context: .
+      dockerfile: Dockerfile
+    env_file: 
+      - .env
+    container_name: node-server
     environment:
       NODE_ENV: production
-      DB_HOST: mysql         # 👈 service name = hostname
-      DB_USER: users
+      DB_HOST: mysql
+      DB_USER: myuser
       DB_PASSWORD: mypassword
-      DB_NAME: mydb
+      DB_NAME: users
+      DB_PORT: 3306
     ports:
-      - 3000:3000
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app       # ✅ Live mount your source code
+      - /usr/src/app/node_modules  # ✅ Prevent node_modules override
     depends_on:
-      - mysql                # 👈 wait for mysql to start
-    command: npm start       # optional, ensures app runs after build
+      mysql:
+        condition: service_healthy
+    command: ["npm", "start"]
 
   mysql:
     image: mysql:8.0
@@ -24,10 +42,10 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
     ports:
-      - "3307:3306"          # expose port for local access (optional)
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:             # optional but useful
+    healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 5s
