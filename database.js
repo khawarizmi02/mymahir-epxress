@@ -23,6 +23,16 @@ const database = mysql.createPool({
 // DB_NAME=users
 // DB_PORT=3306
 
+const db = {
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+}
+
+console.log(db)
+
 
 // Test Connection
 ( async () => {
