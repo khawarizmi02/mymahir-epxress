@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/css/contact.css">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<title>
+		<%=title %>
+	</title>
+
+</head>
+
+<body>
+
+	<div class="header">
+		<h1>
+			<%=title%>
+		</h1>
+		<p>
+			<%=content%>
+		</p>
+	</div>
+
+	<div class="add-button-container">
+		<a href="/contacts/add" class="add-button">
+			<i class="fa-solid fa-plus"></i> Add New Contact
+		</a>
+	</div>
+	<div class="contact-table">
+		<table>
+			<tr>
+				<th> No </th>
+				<th> Name </th>
+				<th> Phone </th>
+				<th> Action </th>
+			</tr>
+			<% contacts.forEach(function(contact, index){ %>
+				<tr>
+					<td>
+						<%= index + 1 %>
+					</td>
+					<td>
+						<%= contact.name %>
+					</td>
+					<td>
+						<%= contact.phone %>
+					</td>
+					<td>
+						<div class="actions">
+							<a href="/contacts/<%=contact.id%>" class="btn btn-view" title="View">
+								<i class="fa-solid fa-eye"></i>
+							</a>
+							<a href="/contacts/update/<%= contact.id %>" btn btn-edit" title="Edit">
+								<i class="fa-solid fa-pen"></i>
+							</a>
+							<form action="/contacts/delete/<%= contact.id %>?_method=DELETE" method="POST">
+								<button type="submit" class="btn btn-delete" title="Delete" onclick="return confirm('Are you sure want to delete?')">
+									<i class="fa-solid fa-trash"></i>
+								</button>
+							</form>
+						</div>
+					</td>
+				</tr>
+				<% }); %>
+		</table>
+	</div>
+
+</body>
+
+</html>

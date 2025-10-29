@@ -1,0 +1,37 @@
+services:
+  server:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql         # 👈 service name = hostname
+      DB_USER: users
+      DB_PASSWORD: mypassword
+      DB_NAME: mydb
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql                # 👈 wait for mysql to start
+    command: npm start       # optional, ensures app runs after build
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: users
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3307:3306"          # expose port for local access (optional)
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:             # optional but useful
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
