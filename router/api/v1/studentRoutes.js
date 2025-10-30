@@ -44,6 +44,8 @@ router.get('/', verifyToken, async (_, res) => {
 
 		await connection.commit()
 
+		console.log('querying students successfull.', students.length)
+
 		res.status(200).json({
 			success: true,
 			message: "Users successfully requested",
@@ -77,6 +79,8 @@ router.post('/', verifyToken, async (req, res) => {
 
 		await connection.commit()
 
+		console.log("student created.", query)
+
 		res.status(200).json({
 			success: true,
 			message: "Student successfully created.",
@@ -107,7 +111,7 @@ router.post('/', verifyToken, async (req, res) => {
 	}
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, async (req, res) => {
 	const connection = await db.getConnection();
 	try {
 		await connection.beginTransaction()
@@ -126,6 +130,8 @@ router.put('/:id', async (req, res) => {
 		if (!query || query.affectedRows === 0) throw new Error('Error created new data into database.')
 
 		 await connection.commit()
+
+		 console.log("Student updated.")
 
 		res.status(200).json({
 			success: true,
@@ -160,7 +166,7 @@ router.put('/:id', async (req, res) => {
 	}
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
 	const connection = await db.getConnection();
 	try {
 		await connection.beginTransaction()
@@ -172,6 +178,8 @@ router.get('/:id', async (req, res) => {
 		await connection.commit()
 
 		const student = query[0]
+
+		console.log("Querying a student successfull.")
 
 		res.status(200).json({
 			success: true,
@@ -193,7 +201,7 @@ router.get('/:id', async (req, res) => {
 	}
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
 	const connection = await db.getConnection();
 	try {
 		await connection.beginTransaction()
@@ -204,6 +212,8 @@ router.delete('/:id', async (req, res) => {
 		if (query.affectedRows === 0 || !query) throw new Error(`Failed to delete student with id:${id}`)
 
 		await connection.commit()
+
+		console.log("Student deleted successfully.")
 
 		res.status(200).json({
 			success: true,

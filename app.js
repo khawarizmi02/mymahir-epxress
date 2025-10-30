@@ -1,13 +1,18 @@
 const express = require('express')
 const path = require('path')
 const methodOverride = require('method-override')
+const cors = require('cors')
 require('dotenv').config()
-
-const db = require('./database')
 
 const app = express()
 
 const PORT = process.env.PORT
+const corsOptions = {
+	origin: [ 'http://localhost:3000', 'http://localhost:4200' ],
+	methods: 'GET,HEAD,PUT,POST,DELETE',
+	credentials: true,
+	allowedHeaders: ['content-Type', 'Authorization']
+}
 
 app.engine('ejs', require('ejs').__express)
 app.set( 'view engine', 'ejs' );
@@ -17,23 +22,11 @@ app.use(express.static('public'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 app.use(methodOverride("_method"))
+app.use(cors(corsOptions))
 
 app.get("/", (_, res) => {
 	res.send('<h1>Hello express</h1>')
 })
-
-app.get("/about", (_, res) => {
-	res.send('<h1>About us page</h1>')
-})
-
-
-app.get('/search', (req, res) => {
-	const { name, page}  = req.query;
-	res.send(`Search keyword: ${name}, Page number: ${page || 1}`)
-})
-
-const blogRoutes = require('./router/blogRoutes')
-app.use("/posts", blogRoutes)
 
 const contactRoutes = require('./router/contactRoutes')
 app.use("/contacts", contactRoutes)
