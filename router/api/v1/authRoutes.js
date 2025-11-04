@@ -7,12 +7,12 @@ const AuthError = require('../../../utils/AuthError')
 const db = require('../../../database')
 const hash = require('../../../utils/PasswordHash')
 
-function validateUserData(name, email, password) {
+function validateUserData(email, password) {
 	const errorMessage = []
 
-	if (!name || name.trim() === '') {
-		errorMessage.push('Name cannot be empty.')
-	}
+	// if (!name || name.trim() === '') {
+	// 	errorMessage.push('Name cannot be empty.')
+	// }
 
 	if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
 		errorMessage.push('Please enter a valid email address and cannot be empty.')
@@ -87,15 +87,15 @@ router.post('/sign-in', async (req, res) => {
 		await connection.beginTransaction()
 
 		const data = { ...req.body, ...req.query }
-		const { name, email, password } = data
+		const { email, password } = data
 
-		const errorMessage = validateUserData(name, email, password)
+		const errorMessage = validateUserData(email, password)
 
 		if (errorMessage) throw new ValidationError(errorMessage)
 
 		const [query] = await connection.query(
-			'SELECT * FROM users WHERE email = ? OR name = ?', 
-			[email, name]
+			'SELECT * FROM users WHERE email = ?', 
+			[email]
 		)
 
 		if (!query) throw new Error('Failed to to get user.')
@@ -109,7 +109,7 @@ router.post('/sign-in', async (req, res) => {
 		await connection.commit()
 
 		const token = jwt.sign(
-			{id: user.id, email: user.email, name: user.name},
+			{id: user.id, email: user.email},
 			process.env.JWT_SECRET,
 			{ expiresIn: '1d' }
 		)

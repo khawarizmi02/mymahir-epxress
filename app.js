@@ -8,7 +8,7 @@ const app = express()
 
 const PORT = process.env.PORT
 const corsOptions = {
-	origin: [ 'http://localhost:3000', 'http://localhost:4200' ],
+	origin: [ 'http://localhost:3000', 'http://localhost:4200', 'https://mymahiroct2025-khawa.web.app', 'https://learnexpress-production.up.railway.app' ],
 	methods: 'GET,HEAD,PUT,POST,DELETE',
 	credentials: true,
 	allowedHeaders: ['content-Type', 'Authorization']
